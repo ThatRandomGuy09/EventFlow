@@ -1,8 +1,11 @@
+import { EventCard } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { auth } from "@clerk/nextjs/server";
 import { CalendarPlus, CalendarRange } from "lucide-react";
 import Link from "next/link";
+
+export const revalidate = 0;
 
 export default async function EventsPage() {
   const { userId, redirectToSignIn } = auth();
@@ -25,7 +28,11 @@ export default async function EventsPage() {
         </Button>
       </div>
       {events.length > 0 ? (
-        <h1>Events</h1>
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(400px,1fr))]">
+          {events.map((event) => (
+            <EventCard key={event.id} {...event} />
+          ))}
+        </div>
       ) : (
         <div className="flex flex-col items-center gap-4">
           <CalendarRange className="size-16 mx-auto" />
