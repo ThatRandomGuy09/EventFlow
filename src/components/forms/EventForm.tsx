@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,24 +12,49 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTrigger,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../ui/alert-dialog";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Switch } from "../ui/switch";
-import { createEvent } from "@/server/actions/event";
+import { createEvent, deleteEvent, updateEvent } from "@/server/actions/event";
+import { useTransition } from "react";
 
-export function EventForm() {
+export function EventForm({
+  event,
+}: {
+  event?: {
+    id: string;
+    name: string;
+    description?: string;
+    durationInMinutes: number;
+    isActive: boolean;
+  };
+}) {
+  const [isDeletePending, startDeleteTransition] = useTransition();
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: {
+    defaultValues: event ?? {
       isActive: true,
       durationInMinutes: 30,
     },
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    const data = await createEvent(values);
+    const action =
+      event == null ? createEvent : updateEvent.bind(null, event.id);
+    const data = await action(values);
     if (data?.error) {
       form.setError("root", { message: "Something went wrong" });
     }
@@ -114,6 +138,47 @@ export function EventForm() {
           )}
         />
         <div className="flex gap-2 justify-end">
+          {event && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructiveGhost"
+                  disabled={isDeletePending || form.formState.isSubmitting}
+                >
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your this event.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={isDeletePending || form.formState.isSubmitting}
+                    variant="destructive"
+                    onClick={() => {
+                      startDeleteTransition(async () => {
+                        const data = await deleteEvent(event.id);
+
+                        if (data?.error) {
+                          form.setError("root", {
+                            message: "There was an error deleting your event",
+                          });
+                        }
+                      });
+                    }}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Button type="button" asChild variant="outline">
             <Link href="/events">Cancel</Link>
           </Button>
