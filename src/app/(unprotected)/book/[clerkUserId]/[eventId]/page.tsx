@@ -18,6 +18,7 @@ import {
 } from "date-fns";
 import Link from "next/link";
 import { getValidTimesFromSchedule } from "@/lib/getValidTimesFromSchedule";
+import { MeetingForm } from "@/components/forms/MeetingForm";
 // import { MeetingForm } from "@/components/forms/MeetingForm";
 
 export const revalidate = 0;
@@ -60,11 +61,11 @@ export default async function BookEventPage({
         )}
       </CardHeader>
       <CardContent>
-        {/* <MeetingForm
+        <MeetingForm
           validTimes={validTimes}
           eventId={event.id}
           clerkUserId={clerkUserId}
-        /> */}
+        />
       </CardContent>
     </Card>
   );
