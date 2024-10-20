@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import "use-server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { google } from "googleapis";
-import { addMinutes} from "date-fns";
+import { addMinutes } from "date-fns";
 
 export async function getCalendarEventTimes(
   clerkUserId: string,
@@ -31,7 +30,7 @@ export async function getCalendarEventTimes(
     .filter((date) => date != null);
 }
 
-export async function createCalendarEvents({
+export async function createCalendarEvent({
   clerkUserId,
   guestName,
   guestEmail,
