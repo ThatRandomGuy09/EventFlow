@@ -61,7 +61,18 @@ export function ScheduleForm({
     fields: availabilityFields,
   } = useFieldArray({ name: "availabilities", control: form.control });
 
-  const groupedAvailabilityFields = Object.groupBy(
+
+  const groupBy = <T>(array: T[], key: (item: T) => string) =>
+    array.reduce((result: Record<string, T[]>, currentValue: T) => {
+      const groupKey = key(currentValue);
+      if (!result[groupKey]) {
+        result[groupKey] = [];
+      }
+      result[groupKey].push(currentValue);
+      return result;
+    }, {});
+
+  const groupedAvailabilityFields = groupBy(
     availabilityFields.map((field, index) => ({ ...field, index })),
     (availability) => availability.dayOfWeek
   );
