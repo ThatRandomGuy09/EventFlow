@@ -46,7 +46,7 @@ With Event Flow, you can:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/event-flow.git
+   git clone https://github.com/ThatRandomGuy09/EventFlow.git
    cd event-flow
    ```
 
@@ -74,12 +74,6 @@ With Event Flow, you can:
 ## Configuration
 
 - **Google Calendar Integration**: You need to set up the Google Calendar API and obtain credentials to integrate with your calendar.
-
-## Usage
-
-1. **Event Creation**: Create events through the admin interface.
-2. **Scheduling a Call**: Share your booking page with others, who can then schedule a call based on available slots.
-3. **Google Calendar Update**: When a call is booked, it will automatically appear on your Google Calendar, and the slot will no longer be available for other bookings.
 
 ## License
 
